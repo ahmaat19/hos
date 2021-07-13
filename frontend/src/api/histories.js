@@ -41,7 +41,11 @@ export const addHistory = async (obj) => {
 
 export const updateHistory = async (obj) => {
   try {
-    const { data } = await axios.put(`/api/histories/${obj._id}`, obj, config())
+    const { data } = await axios.put(
+      `/api/histories/${obj._id}`,
+      obj.reqObj,
+      config()
+    )
     return data
   } catch (error) {
     throw error.response.data.message

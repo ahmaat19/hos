@@ -34,7 +34,7 @@ const patientHistoryScheme = mongoose.Schema(
     reproductiveType: { type: String },
     noOfChildren: { type: Number },
     gravida: { type: Number },
-    pra: { type: Number },
+    para: { type: Number },
     abortion: { type: Number },
     stillBirth: { type: Number },
     alive: { type: Number },

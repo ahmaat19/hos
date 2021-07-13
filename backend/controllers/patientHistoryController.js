@@ -22,7 +22,7 @@ export const addPatientHistory = asyncHandler(async (req, res) => {
     reproductiveType,
     noOfChildren,
     gravida,
-    pra,
+    para,
     abortion,
     stillBirth,
     alive,
@@ -63,7 +63,7 @@ export const addPatientHistory = asyncHandler(async (req, res) => {
     reproductiveType,
     noOfChildren,
     gravida,
-    pra,
+    para,
     abortion,
     stillBirth,
     alive,
@@ -92,8 +92,8 @@ export const addPatientHistory = asyncHandler(async (req, res) => {
 })
 
 export const updatePatientHistory = asyncHandler(async (req, res) => {
+  const patient = req.body.patient
   const {
-    patient,
     chiefComplain,
     hpi,
     pmh,
@@ -112,7 +112,7 @@ export const updatePatientHistory = asyncHandler(async (req, res) => {
     reproductiveType,
     noOfChildren,
     gravida,
-    pra,
+    para,
     abortion,
     stillBirth,
     alive,
@@ -130,7 +130,7 @@ export const updatePatientHistory = asyncHandler(async (req, res) => {
     pregnancy,
     lmp,
     ga,
-  } = req.body
+  } = req.body.obj
   const updatedBy = req.user.id
   const _id = req.params.id
 
@@ -156,7 +156,7 @@ export const updatePatientHistory = asyncHandler(async (req, res) => {
     obj.reproductiveType = reproductiveType
     obj.noOfChildren = noOfChildren
     obj.gravida = gravida
-    obj.pra = pra
+    obj.para = para
     obj.abortion = abortion
     obj.stillBirth = stillBirth
     obj.alive = alive
