@@ -11,6 +11,7 @@ export const addLabRequest = asyncHandler(async (req, res) => {
     serology,
     bioChemistry,
     hematology,
+    isActive: true,
     createdBy,
   })
   if (createObj) {
@@ -33,7 +34,9 @@ export const updateLabRequest = asyncHandler(async (req, res) => {
     obj.serology = serology
     obj.bioChemistry = bioChemistry
     obj.hematology = hematology
+    obj.isActive = true
     obj.updatedBy = updatedBy
+    obj.createdBy = updatedBy
     await obj.save()
     res.status(201).json({ status: 'success' })
   } else {

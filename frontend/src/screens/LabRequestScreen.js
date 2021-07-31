@@ -11,7 +11,7 @@ import {
   getPatients,
 } from '../api/labRequests'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-
+import moment from 'moment'
 import { confirmAlert } from 'react-confirm-alert'
 import { Confirm } from '../components/Confirm'
 import { useForm } from 'react-hook-form'
@@ -98,16 +98,20 @@ const LabRequestScreen = () => {
   }
 
   const submitHandler = (data) => {
-    console.log(data)
     edit
       ? updateLabRequestMutateAsync({
           _id: id,
-          patient: data.patient,
-          hematology: data.hematology,
-          serology: data.serology,
-          bioChemistry: data.bioChemistry,
+          patient: data.patient && data.patient,
+          hematology: data.hematology ? data.hematology : [],
+          serology: data.serology ? data.serology : [],
+          bioChemistry: data.bioChemistry ? data.bioChemistry : [],
         })
-      : addLabRequestMutateAsync(data)
+      : addLabRequestMutateAsync({
+          patient: data.patient && data.patient,
+          hematology: data.hematology ? data.hematology : [],
+          serology: data.serology ? data.serology : [],
+          bioChemistry: data.bioChemistry ? data.bioChemistry : [],
+        })
   }
 
   const editHandler = (labRequest) => {
@@ -126,12 +130,12 @@ const LabRequestScreen = () => {
     refetch()
   }, [page, queryClient])
 
-  const hematologyTests = ['CBC', 'ESR', 'S. Malaria', 'Blood Grouping']
+  const hematologyTests = ['CBC', 'ESR', 'S Malaria', 'Blood Grouping', 'HB']
   const serologyTests = [
-    'H. Pylori',
-    'R. Test',
+    'H Pylori',
+    'R Test',
     'PCR',
-    'W. Test',
+    'W Test',
     'TPHA',
     'HCV',
     'HBSag',
@@ -142,7 +146,6 @@ const LabRequestScreen = () => {
     'Pregnancy Test',
     'Stool Exam',
     'Urinalysis',
-    'HB',
   ]
   const bioChemistryTests = [
     'Urea',
@@ -153,7 +156,7 @@ const LabRequestScreen = () => {
     'Indiret B',
     'Total Protein',
     'Albumin',
-    'A. Phosphatese',
+    'A Phosphatese',
     'TG',
     'Cholestrole',
     'HDL',
@@ -350,7 +353,7 @@ const LabRequestScreen = () => {
       </div>
 
       <div className='d-flex justify-content-between align-items-center'>
-        <h3 className=''>LabRequests</h3>
+        <h3 className=''>Laboratory Request</h3>
         <button
           className='btn btn-primary '
           data-bs-toggle='modal'
@@ -399,11 +402,11 @@ const LabRequestScreen = () => {
                 {data &&
                   data.data.map((labRequest) => (
                     <tr key={labRequest._id}>
-                      <td>{labRequest.createdAt}</td>
+                      <td>{moment(labRequest.createdAt).format('llll')}</td>
                       <td>{labRequest.patient.patientId}</td>
                       <td>{labRequest.patient.patientName}</td>
                       <td>{labRequest.patient.age}</td>
-                      <td>{labRequest.createdAt.name}</td>
+                      <td>{labRequest.createdBy.name}</td>
                       <td className='btn-group'>
                         <button
                           className='btn btn-primary btn-sm'

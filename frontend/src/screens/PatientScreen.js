@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Message from '../components/Message'
 import Loader from 'react-loader-spinner'
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa'
@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form'
 
 const PatientScreen = () => {
   const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
   const {
     register,
     handleSubmit,
@@ -119,9 +120,40 @@ const PatientScreen = () => {
     refetch()
   }, [page, queryClient])
 
+  const inputEl = useRef(null)
+  const searchHandler = () => {
+    // inputEl.current.focus()
+    console.log(inputEl.current.value)
+  }
+
   return (
     <div className='container'>
-      <Pagination data={data} setPage={setPage} />
+      <div className='row'>
+        <div className='col-md-8 col-12'>
+          {/* <form onSubmit={(e) => searchHandler(e)} className='form-inline'> */}
+          <div className='input-group mb-3'>
+            <input
+              type='text'
+              className='form-control'
+              placeholder='Search patient'
+              aria-describedby='search'
+              ref={inputEl}
+              // onChange={(e) => setSearch(e.target.value)}
+            />
+            <button
+              className='input-group-text btn btn-primary border-0'
+              id='search'
+              onClick={searchHandler}
+            >
+              Search
+            </button>
+          </div>
+          {/* </form> */}
+        </div>
+        <div className='col-md-4 col-12'>
+          <Pagination data={data} setPage={setPage} />
+        </div>
+      </div>
       {isSuccessUpdatePatient && (
         <Message variant='success'>
           Patient has been updated successfully.

@@ -9,6 +9,7 @@ import {
   addHistory,
   getPatientHistoryDetail,
 } from '../api/histories'
+import { getPatients } from '../api/labRequests'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 const HistoryFormScreen = () => {
@@ -20,6 +21,14 @@ const HistoryFormScreen = () => {
   const { data, isLoading, isError, error } = useQuery(
     'history',
     () => id && getPatientHistoryDetail(id && id),
+    {
+      retry: 0,
+    }
+  )
+
+  const { data: patientData } = useQuery(
+    'lab-request-patients',
+    () => getPatients(),
     {
       retry: 0,
     }
@@ -159,7 +168,51 @@ const HistoryFormScreen = () => {
 
       <form onSubmit={handleSubmit(submitHandler)}>
         <div className='row gx-2'>
-          <div className='col-md-6 col-12'>
+          <div className='col-md-2 col-12'>
+            <div className='mb-3'>
+              <label htmlFor='patient'>Patient Name</label>
+              {id ? (
+                <input
+                  {...register('patient', {
+                    required: 'Patient name is required',
+                  })}
+                  type='text'
+                  value={id}
+                  disabled
+                  className='form-control'
+                  placeholder='Type to search...'
+                />
+              ) : (
+                <>
+                  <input
+                    {...register('patient', {
+                      required: 'Patient name is required',
+                    })}
+                    type='text'
+                    className='form-control'
+                    autoFocus
+                    list='patientOptions'
+                    id='patient'
+                    placeholder='Type to search...'
+                  />
+                  <datalist id='patientOptions'>
+                    {patientData &&
+                      patientData.map((patient) => (
+                        <option key={patient._id} value={patient._id}>
+                          {patient.patientId} - {patient.patientName}
+                        </option>
+                      ))}
+                    <option value=''></option>
+                  </datalist>
+                </>
+              )}
+
+              {errors.patient && (
+                <span className='text-danger'>{errors.patient.message}</span>
+              )}
+            </div>
+          </div>
+          <div className='col-md-5 col-12'>
             <div className='mb-3'>
               <label htmlFor='chiefComplain'>Chief complain</label>
               <input
@@ -179,7 +232,7 @@ const HistoryFormScreen = () => {
             </div>
           </div>
 
-          <div className='col-md-6 col-12'>
+          <div className='col-md-5 col-12'>
             <div className='mb-3'>
               <label htmlFor='hpi'>History of present illness</label>
               <input

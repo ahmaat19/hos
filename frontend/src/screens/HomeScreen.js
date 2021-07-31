@@ -3,7 +3,6 @@
 
 const HomeScreen = () => {
   // const { data, isLoading } = useQuery('users', getUsers, { retry: 0 })
-  // console.log(!isLoading && data)
 
   return (
     <div className='text-center'>

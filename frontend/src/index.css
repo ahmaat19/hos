@@ -69,7 +69,7 @@ nav {
   background-color: var(--secondary-color) !important;
 }
 .dropdown-menu {
-  background-color: transparent;
+  background-color: var(--tertiary-color);
 }
 
 label {

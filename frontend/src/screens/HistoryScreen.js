@@ -102,7 +102,7 @@ const HistoryScreen = () => {
                       <td>{history.patient.gender}</td>
                       <td>{history.patient.age}</td>
                       <td>{history.patient.mobile}</td>
-                      <td>{history.createdBy.name}</td>
+                      {/* <td>{history.createdBy.name}</td> */}
                       <td>{moment(history.createdAt).format('llll')}</td>
 
                       <td className='btn-group'>

@@ -19,6 +19,10 @@ const LabRequestScheme = mongoose.Schema(
     hematology: { type: [String] },
     serology: { type: [String] },
     bioChemistry: { type: [String] },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
