@@ -41,6 +41,11 @@ const HeaderAuthorized = () => {
                 </Link>
               </li>
               <li className='nav-item'>
+                <Link to='/lab-request' className='nav-link'>
+                  <FaMicroscope className='mb-1' /> Lab Request
+                </Link>
+              </li>
+              <li className='nav-item'>
                 <Link to='/laboratory' className='nav-link'>
                   <FaMicroscope className='mb-1' /> Laboratory
                 </Link>

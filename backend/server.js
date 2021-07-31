@@ -7,6 +7,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js'
 import connectDB from './config/db.js'
 import userRoutes from './routes/userRoutes.js'
 import patientRoutes from './routes/patientRoutes.js'
+import labRequestRoutes from './routes/labRequestRoutes.js'
 import patientHistoryRoutes from './routes/patientHistoryRoutes.js'
 
 dotenv.config()
@@ -23,6 +24,7 @@ app.use(express.json())
 
 app.use('/api/users', userRoutes)
 app.use('/api/patients', patientRoutes)
+app.use('/api/lab-requests', labRequestRoutes)
 app.use('/api/histories', patientHistoryRoutes)
 
 const __dirname = path.resolve()

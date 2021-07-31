@@ -8,9 +8,6 @@ export const addPatient = asyncHandler(async (req, res) => {
   const patientCount = await PatientModel.countDocuments()
   const patientId = `P${patientCount + 1}`
 
-  console.log(patientCount)
-  console.log(patientId)
-
   const createObj = await PatientModel.create({
     patientId,
     patientName,

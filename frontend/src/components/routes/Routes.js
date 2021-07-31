@@ -16,6 +16,7 @@ import PatientScreen from '../../screens/PatientScreen'
 import HistoryScreen from '../../screens/HistoryScreen'
 import LaboratoryScreen from '../../screens/LaboratoryScreen'
 import HistoryFormScreen from '../../screens/HistoryFormScreen'
+import LabRequestScreen from '../../screens/LabRequestScreen'
 
 const Routes = () => {
   return (
@@ -57,6 +58,11 @@ const Routes = () => {
           path='/patient'
           role={['Admin']}
           component={PatientScreen}
+        />
+        <PrivateRoute
+          path='/lab-request'
+          role={['Admin']}
+          component={LabRequestScreen}
         />
 
         <PrivateRoute

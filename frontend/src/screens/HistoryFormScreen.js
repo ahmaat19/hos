@@ -28,7 +28,6 @@ const HistoryFormScreen = () => {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     reset,
     formState: { errors },
@@ -76,7 +75,7 @@ const HistoryFormScreen = () => {
       setValue('vacuum', data.vacuum)
       setValue('weight', data.weight)
     }
-  }, [id, data])
+  }, [id, data, setValue])
 
   const {
     isLoading: isLoadingAddHistory,
