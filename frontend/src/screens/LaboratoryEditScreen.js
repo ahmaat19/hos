@@ -1,49 +1,51 @@
 import React, { useState, useEffect } from 'react'
 import Message from '../components/Message'
 import Loader from 'react-loader-spinner'
-import { FaKeyboard } from 'react-icons/fa'
+import { FaKeyboard, FaPlus } from 'react-icons/fa'
 import Pagination from '../components/Pagination'
 import { getPatients } from '../api/patients'
-import { getRequestedLab, addResults } from '../api/laboratory'
+import { getLaboratory, updateResults } from '../api/laboratory'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import moment from 'moment'
 import { useForm } from 'react-hook-form'
 
-const LaboratoryScreen = () => {
+const LaboratoryEditScreen = () => {
   const [page, setPage] = useState(1)
   const [patientId, setPatientId] = useState('')
   const [fillOut, setFillOut] = useState(null)
-  const { register, handleSubmit, reset } = useForm({
+
+  const { register, handleSubmit, setValue, reset } = useForm({
     defaultValues: {},
   })
 
   const queryClient = useQueryClient()
 
   const {
-    isLoading: isLoadingGetRequestedLab,
-    isError: isErrorGetRequestedLab,
-    error: errorGetRequestedLab,
-    isSuccess: isSuccessGetRequestedLab,
-    data: dataGetRequestedLab,
-    mutateAsync: getRequestedLabMutateAsync,
-  } = useMutation(['getRequestedLab'], () => getRequestedLab(patientId), {
+    isLoading: isLoadingGetLaboratory,
+    isError: isErrorGetLaboratory,
+    error: errorGetLaboratory,
+    isSuccess: isSuccessGetLaboratory,
+    data: dataGetLaboratory,
+    mutateAsync: getLaboratoryMutateAsync,
+  } = useMutation(['getLaboratory'], () => getLaboratory(patientId), {
     retry: 0,
     onSuccess: () => {},
   })
 
   const {
-    isLoading: isLoadingAddResults,
-    isError: isErrorAddResults,
-    error: errorAddResults,
-    isSuccess: isSuccessAddResults,
-    data: dataAddResults,
-    mutateAsync: addResultsMutateAsync,
-  } = useMutation(['addResults'], addResults, {
+    isLoading: isLoadingUpdateResults,
+    isError: isErrorUpdateResults,
+    error: errorUpdateResults,
+    isSuccess: isSuccessUpdateResults,
+    mutateAsync: updateResultsMutateAsync,
+  } = useMutation(['updateResults'], updateResults, {
     retry: 0,
-    onSuccess: () => {},
+    onSuccess: () => {
+      reset()
+      setFillOut(null)
+      queryClient.invalidateQueries(['getLaboratory'])
+    },
   })
-
-  console.log(dataAddResults && dataAddResults)
 
   const { data, isLoading, isError, error } = useQuery(
     'patients',
@@ -58,7 +60,7 @@ const LaboratoryScreen = () => {
   }
 
   const submitHandler = (data) => {
-    addResultsMutateAsync({ data, fillOut })
+    updateResultsMutateAsync({ data, fillOut })
   }
 
   useEffect(() => {
@@ -70,8 +72,17 @@ const LaboratoryScreen = () => {
 
   const searchHandler = (e) => {
     e.preventDefault()
-    getRequestedLabMutateAsync(patientId)
+    getLaboratoryMutateAsync(patientId)
   }
+
+  fillOut &&
+    fillOut.hematology.map((hem) => setValue(`hematology_${hem[0]}`, hem[1]))
+  fillOut &&
+    fillOut.bioChemistry.map((bio) =>
+      setValue(`bioChemistry_${bio[0]}`, bio[1])
+    )
+  fillOut &&
+    fillOut.serology.map((ser) => setValue(`serology_${ser[0]}`, ser[1]))
 
   return (
     <div className='container'>
@@ -100,19 +111,17 @@ const LaboratoryScreen = () => {
           <Pagination data={data} setPage={setPage} />
         </div>
       </div>
-      {isSuccessGetRequestedLab && (
+      {isSuccessGetLaboratory && (
         <Message variant='success'>Record has been found successfully.</Message>
       )}
-      {isErrorGetRequestedLab && (
-        <Message variant='danger'>{errorGetRequestedLab}</Message>
+      {isErrorGetLaboratory && (
+        <Message variant='danger'>{errorGetLaboratory}</Message>
       )}
-      {isSuccessAddResults && (
-        <Message variant='success'>
-          Lab result has been filled out successfully.
-        </Message>
+      {isSuccessUpdateResults && (
+        <Message variant='success'>Lab has been updated successfully.</Message>
       )}
-      {isErrorAddResults && (
-        <Message variant='danger'>{errorAddResults}</Message>
+      {isErrorUpdateResults && (
+        <Message variant='danger'>{errorUpdateResults}</Message>
       )}
 
       <div
@@ -139,7 +148,7 @@ const LaboratoryScreen = () => {
               ></button>
             </div>
             <div className='modal-body'>
-              {isLoadingGetRequestedLab ? (
+              {isLoadingGetLaboratory ? (
                 <div className='text-center'>
                   <Loader
                     type='ThreeDots'
@@ -149,8 +158,8 @@ const LaboratoryScreen = () => {
                     timeout={3000} //3 secs
                   />
                 </div>
-              ) : isErrorGetRequestedLab ? (
-                <Message variant='danger'>{errorGetRequestedLab}</Message>
+              ) : isErrorGetLaboratory ? (
+                <Message variant='danger'>{errorGetLaboratory}</Message>
               ) : (
                 <form onSubmit={handleSubmit(submitHandler)}>
                   {fillOut && fillOut.hematology.length > 0 && (
@@ -161,9 +170,12 @@ const LaboratoryScreen = () => {
                           fillOut.hematology.map((hematology, index) => (
                             <div key={index} className='col-md-3 col-6'>
                               <div className='mb-3'>
-                                <label htmlFor={hematology}>{hematology}</label>
+                                <label htmlFor={hematology[0]}>
+                                  {hematology[0]}
+                                </label>
                                 <input
-                                  {...register(`hematology_${hematology}`)}
+                                  {...register(`${hematology[0]}`)}
+                                  {...register(`hematology_${hematology[0]}`)}
                                   type='text'
                                   placeholder='Enter patient name'
                                   className='form-control'
@@ -183,9 +195,11 @@ const LaboratoryScreen = () => {
                           fillOut.serology.map((serology, index) => (
                             <div key={index} className='col-md-3 col-6'>
                               <div className='mb-3'>
-                                <label htmlFor={serology}>{serology}</label>
+                                <label htmlFor={serology[0]}>
+                                  {serology[0]}
+                                </label>
                                 <input
-                                  {...register(`serology_${serology}`)}
+                                  {...register(`serology_${serology[0]}`)}
                                   type='text'
                                   placeholder='Enter patient name'
                                   className='form-control'
@@ -205,11 +219,13 @@ const LaboratoryScreen = () => {
                           fillOut.bioChemistry.map((bioChemistry, index) => (
                             <div key={index} className='col-md-3 col-6'>
                               <div className='mb-3'>
-                                <label htmlFor={bioChemistry}>
-                                  {bioChemistry}
+                                <label htmlFor={bioChemistry[0]}>
+                                  {bioChemistry[0]}
                                 </label>
                                 <input
-                                  {...register(`bioChemistry_${bioChemistry}`)}
+                                  {...register(
+                                    `bioChemistry_${bioChemistry[0]}`
+                                  )}
                                   type='text'
                                   placeholder='Enter patient name'
                                   className='form-control'
@@ -233,9 +249,9 @@ const LaboratoryScreen = () => {
                     <button
                       type='submit'
                       className='btn btn-primary '
-                      disabled={isLoadingAddResults}
+                      disabled={isLoadingUpdateResults}
                     >
-                      {isLoadingAddResults ? (
+                      {isLoadingUpdateResults ? (
                         <span className='spinner-border spinner-border-sm' />
                       ) : (
                         'Submit'
@@ -251,6 +267,13 @@ const LaboratoryScreen = () => {
 
       <div className='d-flex justify-content-between align-items-center'>
         <h3 className=''>Patients</h3>
+        <button
+          className='btn btn-primary '
+          data-bs-toggle='modal'
+          data-bs-target='#editPatientModal'
+        >
+          <FaPlus className='mb-1' />
+        </button>
       </div>
 
       {isLoading ? (
@@ -281,8 +304,8 @@ const LaboratoryScreen = () => {
                 </tr>
               </thead>
               <tbody>
-                {dataGetRequestedLab &&
-                  dataGetRequestedLab.map((test) => (
+                {dataGetLaboratory &&
+                  dataGetLaboratory.map((test) => (
                     <tr key={test._id}>
                       <td>{test.patient && test.patient.patientId}</td>
                       <td>{test.patient && test.patient.patientName}</td>
@@ -312,4 +335,4 @@ const LaboratoryScreen = () => {
   )
 }
 
-export default LaboratoryScreen
+export default LaboratoryEditScreen

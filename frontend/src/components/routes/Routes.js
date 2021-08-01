@@ -22,6 +22,7 @@ import { getGroups } from '../../api/groups'
 import PatientScreen from '../../screens/PatientScreen'
 import HistoryScreen from '../../screens/HistoryScreen'
 import LaboratoryScreen from '../../screens/LaboratoryScreen'
+import LaboratoryEditScreen from '../../screens/LaboratoryEditScreen'
 import HistoryFormScreen from '../../screens/HistoryFormScreen'
 import LabRequestScreen from '../../screens/LabRequestScreen'
 
@@ -52,6 +53,8 @@ const Routes = () => {
         return HistoryScreen
       case 'LaboratoryScreen':
         return LaboratoryScreen
+      case 'LaboratoryEditScreen':
+        return LaboratoryEditScreen
       case 'HistoryFormScreen':
         return HistoryFormScreen
       case 'LabRequestScreen':

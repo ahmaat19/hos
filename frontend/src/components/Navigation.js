@@ -74,6 +74,14 @@ const Navigation = () => {
             </Link>
           </li>
         )
+      case 'Edit Laboratory':
+        return (
+          <li className='nav-item'>
+            <Link to={path} className='nav-link'>
+              <FaMicroscope className='mb-1' /> {name}
+            </Link>
+          </li>
+        )
 
       default:
         return null

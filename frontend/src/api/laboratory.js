@@ -20,3 +20,30 @@ export const getRequestedLab = async (id) => {
     throw error.response.data.message
   }
 }
+
+export const addResults = async (obj) => {
+  try {
+    const { data } = await axios.post(`/api/laboratory`, obj, config())
+    return data
+  } catch (error) {
+    throw error.response.data.message
+  }
+}
+
+export const getLaboratory = async (id) => {
+  try {
+    const { data } = await axios.get(`/api/laboratory/edit/${id}`, config())
+    return data
+  } catch (error) {
+    throw error.response.data.message
+  }
+}
+
+export const updateResults = async (obj) => {
+  try {
+    const { data } = await axios.put(`/api/laboratory`, obj, config())
+    return data
+  } catch (error) {
+    throw error.response.data.message
+  }
+}
